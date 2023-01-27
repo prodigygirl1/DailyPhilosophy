@@ -5,7 +5,9 @@ import com.studentproj.DailyPhilosophy.dto.RegisterDto;
 import com.studentproj.DailyPhilosophy.mapper.ProfileMapper;
 import com.studentproj.DailyPhilosophy.models.Profile;
 import com.studentproj.DailyPhilosophy.service.ProfileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 public class ProfileController {
     @Autowired
@@ -34,8 +37,14 @@ public class ProfileController {
 
     @GetMapping("/me")
     public Profile me(@AuthenticationPrincipal Profile profile) {
-//        return profile;
-
         return (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    @PutMapping("/update")
+    public void update(@Valid @RequestBody RegisterDto registerDto) {
+        Profile current_user = (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        profileService.update(current_user, registerDto);
+    }
+
+
 }

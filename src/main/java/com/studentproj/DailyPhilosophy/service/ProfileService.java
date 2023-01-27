@@ -1,6 +1,7 @@
 package com.studentproj.DailyPhilosophy.service;
 
 import com.studentproj.DailyPhilosophy.dao.ProfileRepository;
+import com.studentproj.DailyPhilosophy.dto.RegisterDto;
 import com.studentproj.DailyPhilosophy.models.Profile;
 import com.studentproj.DailyPhilosophy.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,19 @@ public class ProfileService implements UserDetailsService {
 
     public String auth(String login, String password) {
         Profile profile = userRepository.findByLogin(login);
+        if (profile == null)
+            return null; // возврат сообщения
         if (encoder.matches(password, profile.getPassword())) {
             return jwtProvider.generateToken(login);
         }
 
-        return null;
+        return null; // возврат сообщения
+    }
+
+    public void update(Profile curr_user, RegisterDto profile) {
+        curr_user.setPassword(encoder.encode(profile.getPassword()));
+        curr_user.setLogin(profile.getLogin());
+        userRepository.save(curr_user);
     }
 
 }
