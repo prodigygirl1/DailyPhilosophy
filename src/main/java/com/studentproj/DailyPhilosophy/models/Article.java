@@ -5,6 +5,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,8 +19,10 @@ public class Article {
     private long id;
     private String name;
     private String content;
-    @ManyToMany(mappedBy = "articles")
-    public Set<Profile> profiles;
+
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    public Set<Profile> profiles =new HashSet<>();
+
     public Article(long id, String name, String content) {
         this.name = name;
         this.content = content;
