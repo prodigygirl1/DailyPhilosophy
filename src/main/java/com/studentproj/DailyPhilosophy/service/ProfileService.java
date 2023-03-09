@@ -22,6 +22,9 @@ import java.util.Set;
 @Component
 public class ProfileService implements UserDetailsService {
     @Autowired
+    private ArticleService articleService;
+
+    @Autowired
     private ProfileRepository userRepository;
 
     @Autowired
@@ -48,6 +51,8 @@ public class ProfileService implements UserDetailsService {
         if (profile == null)
             return null; // возврат сообщения
         if (encoder.matches(password, profile.getPassword())) {
+            // запрос обновления статьи дня
+            articleService.updateArticleDay();
             return jwtProvider.generateToken(login);
         }
 
