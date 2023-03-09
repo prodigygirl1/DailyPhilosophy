@@ -54,6 +54,8 @@ public class ArticleService {
                 recordArticle.get().setDate(dateNow);
                 recordRepository.save(recordArticle.get());
             }
+        } else {
+            recordRepository.save(new RecordArticle(1));
         }
     }
 

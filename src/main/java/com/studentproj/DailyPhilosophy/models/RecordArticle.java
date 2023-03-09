@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "records")
 public class RecordArticle {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rec_seq")
     private long id;
 
     private Date date;
