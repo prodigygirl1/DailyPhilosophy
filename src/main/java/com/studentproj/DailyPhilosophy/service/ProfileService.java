@@ -88,4 +88,8 @@ public class ProfileService implements UserDetailsService {
         return current_user.getArticles();
     }
 
+    public boolean checkLike(Profile current_user, Article article) {
+        return get_likes(current_user).contains(article);
+    }
+
 }
