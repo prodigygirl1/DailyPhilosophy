@@ -65,23 +65,23 @@ public class ProfileService implements UserDetailsService {
         userRepository.save(curr_user);
     }
 
-    public void like(Profile curr_user, Long article_id) {
+    public boolean like(Profile curr_user, Long article_id) {
         Optional<Article> articleLike = articleRepository.findById(article_id);
         if (articleLike.isPresent()) {
             curr_user.addArticleToFav(articleLike.get());
             userRepository.save(curr_user);
-            //return
+            return true;
         }
-        //return
+        return false;
     }
 
-    public void remove_like(Profile curr_user, Long article_id) {
+    public boolean remove_like(Profile curr_user, Long article_id) {
         Article article = curr_user.removeArticleFromFav(article_id);
         if (article != null) {
-            articleRepository.save(article);}
-        else {
-            //return;
+            articleRepository.save(article);
+            return true;
         }
+        return false;
     }
 
     public Set<Article> get_likes(Profile current_user) {

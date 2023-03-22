@@ -8,6 +8,8 @@ import com.studentproj.DailyPhilosophy.models.Profile;
 import com.studentproj.DailyPhilosophy.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,26 +42,44 @@ public class ProfileController {
     }
 
     @GetMapping("/me")
-    public Profile me(@AuthenticationPrincipal Profile profile) {
-        return (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<?> me(@AuthenticationPrincipal Profile profile) {
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails))
+            return new ResponseEntity<>("Отказано в доступе", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>((Profile) SecurityContextHolder
+                .getContext().getAuthentication()
+                .getPrincipal(),
+                HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public void update(@Valid @RequestBody RegisterDto registerDto) {
+    public ResponseEntity<?> update(@Valid @RequestBody RegisterDto registerDto) {
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails))
+            return new ResponseEntity<>("Отказано в доступе", HttpStatus.FORBIDDEN);
         Profile current_user = (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         profileService.update(current_user, registerDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/like/{id}")
-    public void like(@PathVariable Long id) {
+    public ResponseEntity<?> like(@PathVariable Long id) {
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails))
+            return new ResponseEntity<>("Отказано в доступе",HttpStatus.FORBIDDEN);
         Profile current_user = (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        profileService.like(current_user, id);
+        if (profileService.like(current_user, id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Статья не найдена", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/remove_like/{id}")
-    public void remove_like(@PathVariable Long id) {
+    public ResponseEntity<?> remove_like(@PathVariable Long id) {
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails))
+            return new ResponseEntity<>("Отказано в доступе", HttpStatus.FORBIDDEN);
         Profile current_user = (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        profileService.remove_like(current_user, id);
+        if (profileService.remove_like(current_user, id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Статья не найдена", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/get_likes")

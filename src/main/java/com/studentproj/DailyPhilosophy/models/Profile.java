@@ -71,14 +71,6 @@ public class Profile implements UserDetails {
         this.articles.add(article);
         article.getProfiles().add(this);
     }
-    public Article removeArticleFromFav(Article article){
-        Article article1 = this.articles.stream().filter(t -> t.getId() == article.getId()).findFirst().orElse(null);
-        if (article1 != null) {
-            this.articles.remove(article1);
-            article1.getProfiles().remove(this);
-        }
-        return article1;
-    }
 
     public Article removeArticleFromFav(Long article_id){
         Article article1 = this.articles.stream().filter(t -> t.getId() == article_id).findFirst().orElse(null);
