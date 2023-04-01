@@ -1,6 +1,7 @@
 package com.studentproj.DailyPhilosophy.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "records")
+@NoArgsConstructor
 public class RecordArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rec_seq")
@@ -18,12 +20,16 @@ public class RecordArticle {
     private Date date;
 
     private long articleId;
+    private long questionId;
 
     public RecordArticle(long articleId) {
         this.date = new Date();
         this.articleId = articleId;
     }
 
-    public RecordArticle() {
+    public RecordArticle(long articleId, long questionId) {
+        this.date = new Date();
+        this.articleId = articleId;
+        this.questionId = questionId;
     }
 }
