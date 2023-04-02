@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -92,4 +92,12 @@ public class ProfileService implements UserDetailsService {
         return get_likes(current_user).contains(article);
     }
 
+    public boolean IsAlreadyAnswered(Profile current_user) {
+        return current_user.getIsAnsweredToday();
+    }
+
+    public void gaveAnswer(Profile current_user) {
+        current_user.setDateLastAnswer(new Date());
+        userRepository.save(current_user);
+    }
 }

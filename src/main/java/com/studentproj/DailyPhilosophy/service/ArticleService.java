@@ -67,7 +67,7 @@ public class ArticleService {
                 recordRepository.save(recordArticle.get());
             }
         } else {
-            recordRepository.save(new RecordArticle(1, 0));
+            recordRepository.save(new RecordArticle(1, new Date(), 1, 0));
         }
     }
 

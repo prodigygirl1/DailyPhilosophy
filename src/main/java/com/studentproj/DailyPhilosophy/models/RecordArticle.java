@@ -1,5 +1,7 @@
 package com.studentproj.DailyPhilosophy.models;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "records")
 @NoArgsConstructor
+@AllArgsConstructor
 public class RecordArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rec_seq")

@@ -1,6 +1,7 @@
 package com.studentproj.DailyPhilosophy.models;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
 @Slf4j
-@JsonIncludeProperties(value = {"id", "login"})
+@JsonIncludeProperties(value = {"id", "login", "isAnsweredToday"})
 @Entity
 @Getter
 @Setter
@@ -27,6 +26,7 @@ public class Profile implements UserDetails {
     @Column(unique = true)
     private String login;
     private String password;
+    private Date dateLastAnswer;
     @ManyToMany(mappedBy = "profiles",fetch = FetchType.EAGER)
     public Set<Article> articles =new HashSet<>();
     public Profile() {}
@@ -80,4 +80,17 @@ public class Profile implements UserDetails {
         }
         return article1;
     }
+    @JsonProperty("isAnsweredToday")
+    public boolean getIsAnsweredToday (){
+        Date dateUser = this.getDateLastAnswer();
+        Date dateNow = new Date();
+        if (dateUser != null && dateUser.getDay() == dateNow.getDay()
+                && dateUser.getMonth() == dateNow.getMonth()
+                && dateUser.getYear() == dateNow.getYear()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

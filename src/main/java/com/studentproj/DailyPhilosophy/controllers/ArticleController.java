@@ -16,8 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-
 @RestController
 public class ArticleController {
     @Autowired
@@ -59,6 +57,11 @@ public class ArticleController {
     public ResponseEntity<?> checkAnswer(@PathVariable Long id) {
         if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails))
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Profile current_user = (Profile) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (profileService.IsAlreadyAnswered(current_user)) {
+            return new ResponseEntity<>("Ответ уже был получен", HttpStatus.FORBIDDEN);
+        }
+
         Answer userAnswer = articleService.getAnswer(id);
         if (userAnswer == null) {
             return new ResponseEntity<>("Неожиданная ошибка", HttpStatus.NOT_FOUND);
@@ -68,6 +71,8 @@ public class ArticleController {
         if (correctAnswer == null) {
             return new ResponseEntity<>("Неожиданная ошибка", HttpStatus.NOT_FOUND);
         }
+
+        profileService.gaveAnswer(current_user);
         return new ResponseEntity<>(new AnswerCheckResultDto(userAnswer, correctAnswer), HttpStatus.OK);
     }
 }
