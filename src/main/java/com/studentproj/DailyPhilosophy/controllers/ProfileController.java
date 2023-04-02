@@ -37,8 +37,12 @@ public class ProfileController {
     }
 
     @PostMapping("/auth")
-    public String auth(@RequestBody LoginDto dto) {
-        return profileService.auth(dto.getLogin(), dto.getPassword());
+    public ResponseEntity<?>  auth(@RequestBody LoginDto dto) {
+       String token = profileService.auth(dto.getLogin(), dto.getPassword());
+       if (token == null) {
+           return new ResponseEntity<>("Неверный логин или пароль пользователя", HttpStatus.UNAUTHORIZED);
+       }
+       return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @GetMapping("/me")
