@@ -23,6 +23,7 @@ public class Article {
     private long id;
     private String name;
     private String image_path;
+    @Column(length = 2000)
     private String content;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
